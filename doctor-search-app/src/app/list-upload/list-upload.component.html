@@ -1,0 +1,26 @@
+<button class="mat-raised-button showFile" *ngIf='showFile'
+        (click)='showFiles(false)'>Hide Files
+</button>
+
+<button class="mat-raised-button showFile" *ngIf='!showFile'
+        (click)='showFiles(true)'>Show Files
+</button>
+
+<div [hidden]="!showFile">
+  <div class="panel panel-primary" id="panelList">
+    <div class="panel-heading">List of Files</div>
+<!--    <span class="watermark" *ngIf="fileUploads.length === 0">No Uploaded Files</span>-->
+    <div *ngFor="let file of fileUploads">
+      <div class="panel-body">
+        <!--<app-details-upload [fileUpload]='file'></app-details-upload>-->
+        <a href="{{file.url}}" target="_blank">{{file.title}}</a>
+        <!--        <button mat-raised-button
+                        matTooltip="Delete File"
+                        (click)="delete(file.id)">Delete
+                </button>-->
+        <mat-icon matSuffix class="deleteIcon" matTooltip="Delete File" (click)="delete(file.id)">delete_forever
+        </mat-icon>
+      </div>
+    </div>
+  </div>
+</div>

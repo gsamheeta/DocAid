@@ -1,0 +1,23 @@
+<!--<div *ngIf="currentFileUpload" class="progress">
+  <div class="progress-bar progress-bar-info progress-bar-striped"
+       role="progressbar" attr.aria-valuenow="{{progress.percentage}}"
+       aria-valuemin="0" aria-valuemax="100"
+       [ngStyle]="{width:progress.percentage+'%'}">
+    {{progress.percentage}}%</div>
+</div>-->
+<mat-icon matSuffix class="profileIcon" class="warn-image">error_outline</mat-icon>
+<span class="warn-cmnt">Enter all relevant medical documents so that the doctor could have a better understanding of your case.</span>
+<br>
+<br>
+
+<mat-icon matSuffix class="profileIcon" class="warn-image">error_outline</mat-icon>
+<span class="warn-cmnt">Max File size - 512 Kb, Allowed File Types - All image files types</span>
+<br>
+<br>
+
+<label class="btn btn-default" id="uploadMod">
+  <input type="file" (change)="selectFile($event)" id="uploadBar">
+</label>
+
+<button class="mat-raised-button" id="uploadBtn" [disabled]="!selectedFiles"
+        (click)="upload()">Upload</button>

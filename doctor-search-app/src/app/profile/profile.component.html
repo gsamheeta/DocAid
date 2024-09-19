@@ -1,0 +1,197 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary" id="navcss">
+  <a class="navbar-brand" (click)="goHome()">Search Doctor</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+          aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item extra-padding">
+        <a class="nav-link" (click)="goHome()">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active extra-padding">
+        <a class="nav-link" (click)="goProfile()">
+          <span *ngIf="userRole==='user' || userRole==='admin'" >Profile</span>
+          <span *ngIf="userRole==='doctor'">Manage</span>
+        </a>
+      </li>
+      <li class="nav-item" class="extra-padding">
+        <a class="nav-link" *ngIf="profile.username === 'admin'" (click)="goAdmin()">Admin</a>
+      </li>
+    </ul>
+    <span id="username">{{profile.username}}</span>
+    <span class="navbar-text" id="logoutBtn">
+      <button mat-raised-button color="primary" (click)="logout()">Logout</button>
+    </span>
+  </div>
+</nav>
+
+<hr class="hr-text" data-content="Profile Information" *ngIf="userRole==='user' || userRole==='admin'">
+<form nonvalidate #profileForm="ngForm" *ngIf="userRole==='user' || userRole==='admin'">
+  <div class="form-row">
+    <p class="col-4">
+      <mat-form-field class=" form-group col" appearance="standard">
+        <mat-label>Username</mat-label>
+        <input [(ngModel)]="profile.username"
+               disabled #username="ngModel" name="username" matInput placeholder="Enter your username here">
+        <mat-icon matSuffix>account_circle</mat-icon>
+        <mat-hint>Username of the person</mat-hint>
+      </mat-form-field>
+    </p>
+    <p class="col-4">
+      <mat-form-field class=" form-group col" appearance="standard">
+        <mat-label>First Name</mat-label>
+        <input [(ngModel)]="profile.firstName" #firstName="ngModel" name="firstName" matInput
+               placeholder="Enter your first name here">
+        <mat-icon matSuffix>account_circle</mat-icon>
+        <mat-hint>First Name of the user</mat-hint>
+      </mat-form-field>
+    </p>
+
+    <p class="col-4">
+      <mat-form-field class=" form-group col" appearance="standard">
+        <mat-label>Last Name</mat-label>
+        <input [(ngModel)]="profile.lastName" #lastName="ngModel" name="lastName" matInput
+               placeholder="Enter your last name here">
+        <mat-icon matSuffix>account_circle</mat-icon>
+        <mat-hint>Last Name of the user</mat-hint>
+      </mat-form-field>
+    </p>
+  </div>
+
+  <div class="form-row">
+
+    <p class="col-2">
+      <mat-form-field class=" col" appearance="standard">
+        <mat-label>Phone Number</mat-label>
+        <input [(ngModel)]="profile.phone" #phone="ngModel" name="phone" matInput
+               placeholder="Enter your telephone number in the format mentioned in the hint">
+        <mat-icon matSuffix>phone</mat-icon>
+        <mat-hint>Enter in the format <strong>xxx-xxx-xxxx</strong></mat-hint>
+      </mat-form-field>
+    </p>
+
+    <p class="col-4">
+      <mat-form-field class=" col" appearance="standard">
+        <mat-label>Email</mat-label>
+        <input [(ngModel)]="profile.email" #email="ngModel" name="email" matInput
+               placeholder="Enter your email id here">
+        <mat-icon matSuffix>email</mat-icon>
+        <mat-hint>Enter your email ID</mat-hint>
+      </mat-form-field>
+    </p>
+
+    <p class="col-4">
+      <mat-form-field class=" col" appearance="standard">
+        <mat-label>Address</mat-label>
+        <input [(ngModel)]="profile.address" #address="ngModel" name="address" matInput
+               placeholder="Enter your complete address">
+        <mat-icon matSuffix>home</mat-icon>
+        <mat-hint>Please enter detailed address</mat-hint>
+      </mat-form-field>
+    </p>
+
+    <p class="col-2">
+      <mat-form-field appearance="standard" class="example-full-width hint-padding" class="full-width">
+        <input [matDatepicker]="picker" [max]="maxDate" placeholder="Enter Date of Birth"
+               matInput
+               [(ngModel)]="profile.dateOfBirth" name="requested" #requested="ngModel"
+               disabled>
+        <mat-label>Date of Birth</mat-label>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker disabled="false"></mat-datepicker>
+        <mat-hint align="start">
+          Date on which you were born.
+        </mat-hint>
+      </mat-form-field>
+    </p>
+  </div>
+
+  <button mat-raised-button color="primary" id="profile-save-btn" (click)="saveProfile(profile)">Update Profile</button>
+</form>
+
+
+<hr class="hr-text" data-content="Documents Upload" *ngIf="userRole==='user'">
+
+<app-form-upload [userId]=userId *ngIf="userRole==='user'"></app-form-upload>
+
+<br/>
+<br/>
+
+<app-list-upload [userId]=userId *ngIf="userRole==='user'"></app-list-upload>
+
+
+<hr class="hr-text" data-content="Appointments" *ngIf="userRole==='user'">
+<div class="container-fluid" *ngIf="userRole==='user'">
+  <span *ngIf="appointmentList.length === 0" class="watermark">No Appointments yet</span>
+  <div class="row">
+    <div *ngFor="let app of appointmentList" class="tiles">
+      <mat-card class="example-card">
+        <mat-card-header class="example-card">
+          <mat-card-title>{{app.name}}</mat-card-title>
+          <mat-card-subtitle>Doctor : {{app.doctorName}}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="tile-body">
+            Requested : {{app.requested | date}}
+          </p>
+          <p class="tile-body">
+            Created : {{app.created | date}}
+          </p>
+          <p class="tile-body">
+            <span *ngIf="app.confirmation === 'true'">Status : <span *ngIf="app.confirmation === 'true'" class="green"> Confirmed</span></span>
+            <span *ngIf="app.confirmation === 'false'">Status : <span *ngIf="app.confirmation === 'false'"
+                                                                      class="orange"> Requested</span></span>
+            <span *ngIf="app.confirmation === 'cancelled'">Status : <span *ngIf="app.confirmation === 'cancelled'"
+                                                                          class="red"> Cancelled</span></span>
+
+          </p>
+          <p class="tile-body">
+            Doctor's Comments : {{app.comments}}
+          </p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
+
+
+<div class="container-fluid" *ngIf="userRole==='doctor'">
+  <div class="row">
+    <div *ngFor="let app of docsAppointmentList" class="tiles">
+      <mat-card class="example-card">
+        <mat-card-header class="example-card">
+          <mat-card-title>{{app.name}}</mat-card-title>
+          <mat-card-subtitle> Requested : {{app.requested | date}}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="tile-body">
+            Created : {{app.created | date}}
+          </p>
+          <p class="tile-body">
+            <span *ngIf="app.confirmation === 'true'">Status : <span *ngIf="app.confirmation === 'true'" class="green"> Confirmed</span></span>
+            <span *ngIf="app.confirmation === 'false'">Status : <span *ngIf="app.confirmation === 'false'"
+                                                                      class="orange"> Requested</span></span>
+            <span *ngIf="app.confirmation === 'cancelled'">Status : <span *ngIf="app.confirmation === 'cancelled'"
+                                                                          class="red"> Cancelled</span></span>
+          </p>
+          <p class="tile-body">
+            <mat-form-field class=" form-group col" appearance="standard" id="zero-padding">
+              <mat-label>Comments</mat-label>
+              <input [(ngModel)]="app.comments" name="docComments" matInput
+                     placeholder="Enter any relevant comments">
+              <mat-icon matSuffix>comment</mat-icon>
+              <mat-hint>Comments for the requested user</mat-hint>
+            </mat-form-field>
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button (click)="fetchPatientInfo(app.userId)" class="info-btn">User Info</button>
+          <button mat-raised-button color="primary" (click)="approve(app)" class="aprej-btn">Approve</button>
+          <button mat-raised-button (click)="reject(app)" class="aprej-btn">Reject</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>
+

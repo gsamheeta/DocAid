@@ -1,0 +1,70 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary" id="navcss">
+  <a class="navbar-brand" (click)="goHome()">Search Doctor</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+          aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item extra-padding">
+        <a class="nav-link" (click)="goHome()">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item extra-padding" *ngIf="userRole==='user' || userRole==='admin' || userRole==='doctor'">
+        <a class="nav-link" (click)="goProfile()">
+          <span *ngIf="userRole==='user' || userRole==='admin'">Profile</span>
+          <span *ngIf="userRole==='doctor'">Manage</span>
+        </a>
+      </li>
+      <li class="nav-item" class="extra-padding" *ngIf="userRole==='admin'">
+        <a class="nav-link" *ngIf="profile.username === 'admin'" (click)="goAdmin()">Admin</a>
+      </li>
+    </ul>
+    <span id="username"
+          *ngIf="userRole==='user' || userRole==='admin' || userRole==='doctor'">{{profile.username}}</span>
+    <span class="navbar-text logoutBtn" *ngIf="userRole==='user' || userRole==='admin' || userRole==='doctor'">
+      <button mat-raised-button color="primary" (click)="logout()">Logout</button>
+    </span>
+
+    <span class="navbar-text logoutBtn" *ngIf="userRole=== undefined">
+      <button mat-raised-button color="primary" (click)="login()">Login</button>
+    </span>
+
+  </div>
+</nav>
+
+
+<img src={{docProfileInfo.profile.image_url}} alt="Image" style="width:100px;height:100px;" id="rounded-image" *ngIf="docProfileInfo !== undefined">
+<hr class="hr-text" data-content="Information">
+<div id="nameField" *ngIf="docProfileInfo !== undefined">
+  <span id="firstName">{{docProfileInfo.profile.first_name}}</span>
+  <span id="middleName">{{docProfileInfo.profile.middle_name}}</span>
+  <span id="lastName">{{docProfileInfo.profile.last_name}}</span>
+  <span id="title">({{docProfileInfo.profile.title}})</span>
+</div>
+
+<div id="bioDiv" *ngIf="docProfileInfo !== undefined">
+  <span id="bioDivSpan">{{docProfileInfo.profile.bio}}</span>
+</div>
+
+<button mat-raised-button *ngIf="userRole==='user'" id="align-centre" (click)="createAppointment(docProfileInfo)">
+  Request
+  Appointment
+</button>
+
+
+<hr class="hr-text" data-content="Users who took appointments with the Doctor">
+<div class="container-fluid">
+  <span *ngIf="patientsList.length === 0" class="watermark">No Patients yet</span>
+  <div class="row">
+    <div *ngFor="let patient of patientsList" class="tiles">
+      <mat-card class="example-card">
+        <mat-card-header class="example-card">
+          <mat-card-title>{{patient.username}}</mat-card-title>
+          <mat-card-subtitle *ngIf="patient.email!==''">{{patient.email}}</mat-card-subtitle>
+          <mat-card-subtitle *ngIf="patient.phone!==''">{{patient.phone}}</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+    </div>
+  </div>
+</div>
+

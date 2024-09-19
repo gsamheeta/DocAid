@@ -1,0 +1,290 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary" id="navcss">
+  <a class="navbar-brand" (click)="goHome()">Search Doctor</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+          aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active extra-padding">
+        <a class="nav-link" (click)="goHome()">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item extra-padding" *ngIf="userRole==='user' || userRole==='admin' || userRole==='doctor'">
+        <a class="nav-link" (click)="goProfile()">
+          <span *ngIf="userRole==='user' || userRole==='admin'">Profile</span>
+          <span *ngIf="userRole==='doctor'">Manage</span>
+        </a>
+      </li>
+      <li class="nav-item" class="extra-padding" *ngIf="userRole==='admin'">
+        <a class="nav-link" *ngIf="profile.username === 'admin'" (click)="goAdmin()">Admin</a>
+      </li>
+    </ul>
+    <span id="username"
+          *ngIf="userRole==='user' || userRole==='admin' || userRole==='doctor'">{{profile.username}}</span>
+    <span class="navbar-text logoutBtn" *ngIf="userRole==='user' || userRole==='admin' || userRole==='doctor'">
+      <button mat-raised-button color="primary" (click)="logout()">Logout</button>
+    </span>
+
+    <span class="navbar-text logoutBtn" *ngIf="userRole=== undefined">
+      <button mat-raised-button color="primary" (click)="login()">Login</button>
+    </span>
+
+  </div>
+</nav>
+
+
+<div id="main">
+
+  <div class="form-row align-items-center" id="child1">
+    <img src="../../assets/images/1.svg" alt="Home pic" id="home_image">
+  </div>
+
+  <mat-tab-group [color]="'primary'" [backgroundColor]="'primary'" id="tab-width" id="child2">
+    <mat-tab label="General Search">
+      <form class="example-form" nonvalidate #generalForm="ngForm">
+
+        <hr class="hr-text" data-content="Fill both the fields">
+
+        <mat-form-field appearance="outline" class="example-full-width hint-padding">
+          <mat-label>Country</mat-label>
+          <input type="text" placeholder="Country" aria-label="Country" matInput [formControl]="formControl"
+                 [matAutocomplete]="auto" [(ngModel)]="countryField" readonly>
+          <mat-hint align="start">
+            <mat-icon matSuffix class="hint-warning-icon">error_outline</mat-icon>
+            The country needs to be USA for the API to work (Use Locate me Button)
+          </mat-hint>
+          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+            <mat-option *ngFor="let country of filteredCountries | async" [value]="country">
+              {{country}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="example-full-width hint-padding">
+          <input type="text" placeholder="State" aria-label="State" matInput [formControl]="formControl2"
+                 [matAutocomplete]="autoTest" [(ngModel)]="stateField" readonly>
+          <mat-label>State</mat-label>
+          <mat-hint align="start">
+            <mat-icon matSuffix class="hint-warning-icon">error_outline</mat-icon>
+            The state needs to be part of USA for the API to work (Use Locate me Button)
+          </mat-hint>
+          <mat-autocomplete autoActiveFirstOption #autoTest="matAutocomplete">
+            <mat-option *ngFor="let state of filteredStates | async" [value]="state">
+              {{state}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <hr class="hr-text" data-content="Choose and fill atleast one field">
+
+        <mat-form-field appearance="outline" class="example-full-width hint-padding">
+          <mat-label>Disease</mat-label>
+          <input type="text" placeholder="Disease" aria-label="Disease" matInput
+                 [(ngModel)]="general.disease" name="disease" #disease="ngModel">
+          <mat-hint align="start">
+            Search all fields by a keyword (e.g. 'Toothache').
+          </mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="example-full-width hint-padding">
+          <input type="text" placeholder="Enter first name of the doctor" aria-label="Enter first name of the doctor"
+                 matInput
+                 [(ngModel)]="general.firstName" name="firstName" #firstName="ngModel">
+          <mat-label>First Name</mat-label>
+          <mat-hint align="start">
+            The doctor's first name; partial (type-ahead) characters/names are accepted.
+          </mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="example-full-width hint-padding">
+          <input type="text" placeholder="Enter last name of the doctor" aria-label="Enter last name of the doctor"
+                 matInput
+                 [(ngModel)]="general.lastName" name="lastName" #lastName="ngModel">
+          <mat-label>Last Name</mat-label>
+          <mat-hint align="start">
+            The doctor's last name; partial (type-ahead) characters/names are accepted.
+          </mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="example-full-width hint-padding">
+          <input type="text" placeholder="Enter name of the doctor" aria-label="Enter name of the doctor"
+                 matInput
+                 [(ngModel)]="general.name" name="name" #name="ngModel">
+          <mat-label>Doctor's Name</mat-label>
+          <mat-hint align="start">
+            The doctor's name; searches in both first and last names. Partial (type-ahead) characters/names are
+            accepted.
+          </mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="example-full-width hint-padding">
+          <mat-label>Gender</mat-label>
+          <mat-select placeholder="Gender" [(ngModel)]="general.gender" name="gender">
+            <mat-option *ngFor="let val of gender" [value]="val.value">
+              {{val.viewValue}}
+            </mat-option>
+          </mat-select>
+          <mat-hint align="start">
+            The doctor's gender ('male' or 'female').
+          </mat-hint>
+        </mat-form-field>
+
+        <button mat-raised-button id="search-doc"
+                matTooltip="Only US based results are shown"
+                (click)="generalSearch(general)">Search
+        </button>
+        <button mat-raised-button
+                matTooltip="Find my location"
+                id="location-box-button" (click)="showPosition()">Locate me
+        </button>
+        <div id="result">
+        </div>
+   <!--     <table *ngIf="doctorDetailedInfo.length !== 0">
+          <tr>
+            <th>Name</th>
+          </tr>
+          <tr *ngFor=" let doc of doctorDetailedInfo">
+            <td>{{doc.profile.slug}}</td>
+            <td>
+              <button mat-raised-button id="info-doc" (click)="findDocById(doc.uid)">Find Info</button>
+            </td>
+          </tr>
+        </table>-->
+      </form>
+    </mat-tab>
+    <mat-tab label="Specific Search">
+      <form class="example-form">
+
+        <hr class="hr-text" data-content="Fill both the fields">
+
+        <mat-form-field appearance="outline" class="example-full-width hint-padding">
+          <mat-label>Country</mat-label>
+          <input type="text" placeholder="Country" aria-label="Country" matInput [formControl]="formControl"
+                 [matAutocomplete]="auto" [(ngModel)]="specific.countryField" readonly>
+          <mat-hint align="start">
+            <mat-icon matSuffix class="hint-warning-icon">error_outline</mat-icon>
+            The country needs to be USA for the API to work (Use Locate me Button)
+          </mat-hint>
+          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+            <mat-option *ngFor="let country of filteredCountries | async" [value]="country">
+              {{country}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="example-full-width hint-padding">
+          <input type="text" placeholder="State" aria-label="State" matInput [formControl]="formControl2"
+                 [matAutocomplete]="autoTest" [(ngModel)]="specific.stateField" readonly>
+          <mat-label>State</mat-label>
+          <mat-hint align="start">
+            <mat-icon matSuffix class="hint-warning-icon">error_outline</mat-icon>
+            The state needs to be part of USA for the API to work (Use Locate me Button)
+          </mat-hint>
+          <mat-autocomplete autoActiveFirstOption #autoTest="matAutocomplete">
+            <mat-option *ngFor="let state of filteredStates | async" [value]="state">
+              {{state}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <hr class="hr-text" data-content="Fill Speciality followed by what disease of the speciality ">
+
+        <mat-form-field appearance="outline" class="example-full-width">
+          <mat-label>Speciality</mat-label>
+          <input type="text" placeholder="Speciality" aria-label="Speciality" matInput [formControl]="formControl3"
+                 [matAutocomplete]="autoTests" [(ngModel)]="specific.specialityField" required>
+          <mat-autocomplete autoActiveFirstOption #autoTests="matAutocomplete">
+            <mat-option *ngFor="let sp of filteredSpeciality | async" [value]="sp">
+              {{sp}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="example-full-width">
+          <mat-label>Disease</mat-label>
+          <input matInput placeholder="What is the disease" [(ngModel)]="specific.diseaseField"
+                 [ngModelOptions]="{standalone: true}"
+                 (change)="change()" required>
+        </mat-form-field>
+        <!--<p><span id="red">**</span> Results are only for US doctors. Location-wise search will be done in next release.</p>-->
+        <button mat-raised-button id="search-doc"
+                matTooltip="Only US based results are shown"
+                (click)="specificSearch()">Search
+        </button>
+        <button mat-raised-button
+                matTooltip="Find my location"
+                id="location-box-button" (click)="showPosition()">Locate me
+        </button>
+        <div id="result">
+        </div>
+<!--        <table *ngIf="doctorDetailedInfo.length !== 0">
+          <tr>
+            <th>Name</th>
+          </tr>
+          <tr *ngFor=" let doc of doctorDetailedInfo">
+            <td>{{doc.profile.slug}}</td>
+            <td>
+              <button mat-raised-button id="info-doc" (click)="findDocById(doc.uid)">Find Info</button>
+            </td>
+          </tr>
+        </table>-->
+      </form>
+    </mat-tab>
+  </mat-tab-group>
+
+</div>
+
+<hr class="hr-text" data-content="List of searched results" *ngIf="apiDocData !== undefined">
+
+<div class="example-container mat-elevation-z8 resultTable" [hidden]="showTable">
+  <div class="example-loading-shade"
+       *ngIf="isLoadingAPIResults">
+    <mat-spinner *ngIf="isLoadingAPIResults"></mat-spinner>
+  </div>
+
+  <div class="example-table-container">
+
+    <table mat-table [dataSource]="apiDocData !== undefined ? apiDocData.data : []" class="example-table">
+
+      <ng-container matColumnDef="firstName">
+        <th mat-header-cell *matHeaderCellDef>First Name</th>
+        <td mat-cell *matCellDef="let row">{{row.profile.first_name}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="middleName">
+        <th mat-header-cell *matHeaderCellDef>Middle Name</th>
+        <td mat-cell *matCellDef="let row">{{row.profile.middle_name}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="lastName">
+        <th mat-header-cell *matHeaderCellDef>Last Name</th>
+        <td mat-cell *matCellDef="let row">{{row.profile.last_name}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef>Title</th>
+        <td mat-cell *matCellDef="let row">{{row.profile.title}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="gender">
+        <th mat-header-cell *matHeaderCellDef>Gender</th>
+        <td mat-cell *matCellDef="let row">{{row.profile.gender}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>Action</th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-raised-button (click)="findDocById(row.uid)">Find Info</button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: tableColumns;"></tr>
+    </table>
+  </div>
+
+  <mat-paginator [length]="resultsLength !== undefined ? resultsLength.total : []" [pageSize]="10"
+                 showFirstLastButtons></mat-paginator>
+</div>
+
+

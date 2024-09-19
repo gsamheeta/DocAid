@@ -1,0 +1,38 @@
+{
+  "/2016-03-01/*": {
+    "target": "https://api.betterdoctor.com",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/api/*": {
+    "target": "http://localhost:8080",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/post": {
+    "target": "http://localhost:8080",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/getallfiles": {
+    "target": "http://localhost:8080",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/files": {
+    "target": "http://localhost:8080",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/deleteFiles": {
+    "target": "http://localhost:8080",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

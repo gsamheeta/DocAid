@@ -1,0 +1,48 @@
+<h1 mat-dialog-title>Book an Appointment</h1>
+<div mat-dialog-content>
+  <form class="example-form" nonvalidate #generalForm="ngForm">
+
+    <mat-form-field appearance="standard" class="example-full-width hint-padding" class="full-width">
+      <input type="text" placeholder="Enter an appointment name" aria-label="Enter an appointment name"
+             matInput
+             [(ngModel)]="data.appointmentName" name="appointmentName" #appointmentName="ngModel">
+      <mat-label>Appointment Name</mat-label>
+      <mat-hint align="start">
+        Enter a name for the appointment.
+      </mat-hint>
+    </mat-form-field>
+
+
+    <mat-form-field appearance="standard" class="example-full-width hint-padding" class="full-width">
+      <input type="text" placeholder="Enter name of the doctor" aria-label="Enter name of the doctor"
+             matInput
+             [(ngModel)]="data.doctorName" name="name" #name="ngModel" readonly>
+      <mat-label>Doctor Name</mat-label>
+      <mat-hint align="start">
+        The name of the doctor.
+      </mat-hint>
+    </mat-form-field>
+
+
+    <mat-form-field appearance="standard" class="example-full-width hint-padding" class="full-width">
+      <input [matDatepicker]="picker" [min]="minDate" [max]="maxDate" placeholder="Enter the appointment date"
+             matInput
+             [(ngModel)]="data.requested" name="requested" #requested="ngModel" [matDatepickerFilter]="myFilter"
+             disabled>
+      <mat-label>Requested Date</mat-label>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker disabled="false"></mat-datepicker>
+      <mat-hint align="start">
+        Date for which appointment is requested.
+      </mat-hint>
+    </mat-form-field>
+  </form>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-raised-button color="secondary" (click)="onNoClick()" class="action-btn">Cancel</button>
+  <button mat-raised-button color="primary" class="shift-right action-btn" [mat-dialog-close]="data" cdkFocusInitial>
+    <mat-icon matSuffix>done</mat-icon>
+    Ok
+  </button>
+</div>

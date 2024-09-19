@@ -1,0 +1,313 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary" id="navcss">
+  <a class="navbar-brand" (click)="goHome()">Search Doctor</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+          aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item extra-padding">
+        <a class="nav-link" (click)="goHome()">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item extra-padding" *ngIf="userRole==='user' || userRole==='admin' || userRole==='doctor'">
+        <a class="nav-link" (click)="goProfile()">
+          <span *ngIf="userRole==='user' || userRole==='admin'">Profile</span>
+          <span *ngIf="userRole==='doctor'">Manage</span>
+        </a>
+      </li>
+      <li class="nav-item active extra-padding" *ngIf="userRole==='admin'">
+        <a class="nav-link" *ngIf="admin.username === 'admin'" (click)="goAdmin()">Admin</a>
+      </li>
+    </ul>
+    <span id="username"
+          *ngIf="userRole==='user' || userRole==='admin' || userRole==='doctor'">{{admin.username}}</span>
+    <span class="navbar-text logoutBtn" *ngIf="userRole==='user' || userRole==='admin' || userRole==='doctor'">
+      <button mat-raised-button color="primary" (click)="logout()">Logout</button>
+    </span>
+
+    <span class="navbar-text logoutBtn" *ngIf="userRole=== undefined">
+      <button mat-raised-button color="primary" (click)="login()">Login</button>
+    </span>
+
+  </div>
+</nav>
+
+<div>
+  <!-- <button mat-raised-button color="primary" (click)="openCreateUserFields()">Create User</button>-->
+  <button mat-mini-fab color="primary" (click)="openCreateUserFields()" matTooltip="Create User" class="fab-btn-css">
+    <mat-icon matSuffix>person_add</mat-icon>
+  </button>
+
+  <hr class="hr-text" data-content="Create User" *ngIf="userForm">
+  <div class="form-row modDiv" *ngIf="userForm">
+
+    <p class="col-3">
+      <mat-form-field class="full-width" appearance="standard">
+        <mat-label>Username</mat-label>
+        <input type="text" matInput placeholder="Username" name="regUsername" [(ngModel)]="newUser.regUsername">
+        <mat-icon matSuffix>account_circle</mat-icon>
+        <mat-hint>Username</mat-hint>
+      </mat-form-field>
+    </p>
+
+    <p class="col-3">
+      <mat-form-field class="full-width" appearance="standard">
+        <mat-label>Password</mat-label>
+        <input type="password" matInput placeholder="Username" name="regPassword" [(ngModel)]="newUser.regPassword">
+        <mat-icon matSuffix>account_circle</mat-icon>
+        <mat-hint>Password</mat-hint>
+      </mat-form-field>
+    </p>
+
+    <p class="col-3">
+      <mat-form-field class="full-width dropdownAdjust">
+        <mat-select placeholder="User Role" [(ngModel)]="newUser.role">
+          <mat-option *ngFor="let role of roleList" [value]="role.value">
+            {{role.viewValue}}
+          </mat-option>
+        </mat-select>
+        <mat-hint>User role</mat-hint>
+      </mat-form-field>
+    </p>
+
+    <p class="col-3" *ngIf="newUser.role === 'doctor'">
+      <mat-form-field class="full-width" appearance="standard">
+        <mat-label>Doctor UID</mat-label>
+        <input type="text" matInput placeholder="Doctor UID" name="uid" [(ngModel)]="newUser.uid">
+        <mat-icon matSuffix>account_circle</mat-icon>
+        <mat-hint>Password</mat-hint>
+      </mat-form-field>
+    </p>
+
+  </div>
+
+  <button *ngIf="userForm" mat-raised-button color="primary" (click)="createUser(newUser)" class="btn-adjust">Create</button>
+  <button *ngIf="userForm" mat-raised-button (click)="closeUser()">Close</button>
+  <hr *ngIf="userForm" class="hr-text">
+</div>
+
+<div>
+
+  <!--<button mat-raised-button color="primary" (click)="openCreateAppointmentFields()">Create Appointment</button>-->
+
+  <button mat-mini-fab color="primary" (click)="openCreateAppointmentFields()"
+          matTooltip="Create Appointment" class="fab-btn-css">
+    <mat-icon matSuffix>meeting_room</mat-icon>
+  </button>
+
+  <hr class="hr-text" data-content="Create Appointment" *ngIf="appointmentForm">
+  <div class="form-row" *ngIf="appointmentForm">
+
+    <p class="col-3">
+      <mat-form-field class="full-width" appearance="standard">
+        <mat-label>Appointment Name</mat-label>
+        <input type="text" matInput placeholder="Appointment Name" name="name" [(ngModel)]="newApp.name">
+        <mat-icon matSuffix>account_circle</mat-icon>
+        <mat-hint>Name of the appointment</mat-hint>
+      </mat-form-field>
+    </p>
+
+    <p class="col-3">
+      <mat-form-field appearance="standard" class="full-width">
+        <input [matDatepicker]="picker" [min]="minDate" [max]="maxappDate" placeholder="Enter the appointment date"
+               matInput
+               [(ngModel)]="newApp.requested" [matDatepickerFilter]="myFilter"
+               disabled name="requested">
+        <mat-label>Requested Date</mat-label>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker disabled="false"></mat-datepicker>
+        <mat-hint align="start">
+          Date for which appointment is requested.
+        </mat-hint>
+      </mat-form-field>
+    </p>
+
+    <p class="col-3">
+      <mat-form-field class="full-width dropdownAdjust">
+        <mat-select placeholder="User" [(ngModel)]="newApp.userId">
+          <mat-option *ngFor="let role of roleUserList" [value]="role.value">
+            {{role.viewValue}}
+          </mat-option>
+        </mat-select>
+        <mat-hint>User</mat-hint>
+      </mat-form-field>
+    </p>
+
+    <p class="col-3">
+      <mat-form-field class="full-width dropdownAdjust">
+        <mat-select placeholder="Doctor" [(ngModel)]="newApp.doctorUID">
+          <mat-option *ngFor="let role of roleDoctorList" [value]="role.uid">
+            {{role.viewValue}}
+          </mat-option>
+        </mat-select>
+        <mat-hint>Doctor</mat-hint>
+      </mat-form-field>
+    </p>
+
+  </div>
+  <button *ngIf="appointmentForm" mat-raised-button color="primary" class="btn-adjust"
+          (click)="createAppointment(newApp)">Create</button>
+  <button *ngIf="appointmentForm" mat-raised-button (click)="closeAppointment()">Close</button>
+  <hr *ngIf="appointmentForm" class="hr-text">
+
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <mat-spinner *ngIf="loading" id="loaderCSS"></mat-spinner>
+    <div *ngFor="let user of users" class="tiles">
+      <div *ngIf="user.role !== 'admin'">
+        <mat-card class="example-card">
+          <mat-card-header class="example-card">
+            <div *ngIf="user.role === 'user'">
+              <mat-icon matSuffix class="example-header-image-user">person_pin</mat-icon>
+            </div>
+            <div *ngIf="user.role === 'doctor'">
+              <mat-icon matSuffix class="example-header-image-doctor">person_pin</mat-icon>
+            </div>
+            <mat-card-title class="text-uppercase">{{user.username}}</mat-card-title>
+            <mat-card-subtitle class="text-uppercase">{{user.role}}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Personal data
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Info about {{user.username}}
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <mat-form-field class="full-width" appearance="standard">
+                  <mat-label>Username</mat-label>
+                  <input matInput placeholder="Username" [(ngModel)]="user.username">
+                  <mat-icon matSuffix>account_circle</mat-icon>
+                  <mat-hint>Username</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field class="full-width" appearance="standard">
+                  <mat-label>First Name</mat-label>
+                  <input matInput placeholder="First Name" [(ngModel)]="user.firstName">
+                  <mat-icon matSuffix>account_circle</mat-icon>
+                  <mat-hint>First Name</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field class="full-width" appearance="standard">
+                  <mat-label>Last Name</mat-label>
+                  <input matInput placeholder="Last Name" [(ngModel)]="user.lastName">
+                  <mat-icon matSuffix>account_circle</mat-icon>
+                  <mat-hint>Last Name</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field class="full-width" appearance="standard">
+                  <mat-label>Phone</mat-label>
+                  <input matInput placeholder="Phone" [(ngModel)]="user.phone">
+                  <mat-icon matSuffix>phone</mat-icon>
+                  <mat-hint>Phone</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field class="full-width" appearance="standard">
+                  <mat-label>Email</mat-label>
+                  <input matInput placeholder="Email" [(ngModel)]="user.email">
+                  <mat-icon matSuffix>email</mat-icon>
+                  <mat-hint>Email</mat-hint>
+                </mat-form-field>
+
+                <!--                <mat-form-field class="full-width" appearance="standard">
+                                  <mat-label>Date of Birth</mat-label>
+                                  <input [matDatepicker]="dobpicker" [max]="maxDate" matInput placeholder="Date Of Birth"
+                                         [(ngModel)]="user.dateOfBirth"
+                                         disabled>
+                                  <mat-datepicker-toggle matSuffix [for]="dobpicker"></mat-datepicker-toggle>
+                                  <mat-datepicker #dobpicker disabled="false"></mat-datepicker>
+                                  <mat-hint>Date of Birth</mat-hint>
+                                </mat-form-field>-->
+
+                <mat-form-field class="full-width" appearance="standard">
+                  <mat-label>Address</mat-label>
+                  <input matInput placeholder="address" [(ngModel)]="user.address">
+                  <mat-icon matSuffix>location_city</mat-icon>
+                  <mat-hint>Address</mat-hint>
+                </mat-form-field>
+
+                <mat-action-row>
+                  <button mat-raised-button color="primary" (click)="updateUser(user.id,user)">Update</button>
+                </mat-action-row>
+
+              </mat-expansion-panel>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Appointments
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    {{user.username}}'s Appointments
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div *ngFor="let app of user.appointmentData">
+                  <hr class="hr-text">
+                  <span class="appointmentName">{{app.name}} on ({{app.requested | date}})</span>
+
+                  <mat-form-field class="full-width" appearance="standard">
+                    <mat-label>Status</mat-label>
+                    <input matInput placeholder="Email" [(ngModel)]="app.confirmation">
+                    <mat-icon matSuffix>timeline</mat-icon>
+                    <mat-hint><b>false</b> - Pending, <b>true</b> - Confirmed, <b>cancelled</b> - Cancelled</mat-hint>
+                  </mat-form-field>
+
+                  <mat-form-field class="full-width" appearance="standard">
+                    <mat-label>Comments</mat-label>
+                    <input matInput placeholder="Comments" [(ngModel)]="app.comments">
+                    <mat-icon matSuffix>comment</mat-icon>
+                    <mat-hint>Comments</mat-hint>
+                  </mat-form-field>
+
+                  <div class="btn-group-apt">
+                    <button mat-raised-button color="primary" (click)="updateAppointment(app)"
+                            id="btn-group-apt-update">Update
+                    </button>
+                    <button mat-raised-button color="warn" (click)="deleteAppointment(app.id)"
+                            id="btn-group-apt-delete">Delete
+                    </button>
+                  </div>
+                </div>
+              </mat-expansion-panel>
+
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Uploads
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    {{user.username}}'s Docs
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div *ngFor="let data of user.data">
+
+                  <a href="{{data.url}}" target="_blank">{{data.title}}</a>
+                  <!--                  <button mat-raised-button
+                                            matTooltip="Delete File"
+                                            (click)="deleteFile(data.id)">Delete
+                                    </button>-->
+                  <mat-icon matSuffix class="deleteIcon" matTooltip="Delete File" (click)="deleteFile(data.id)">
+                    delete_forever
+                  </mat-icon>
+
+                </div>
+              </mat-expansion-panel>
+
+            </mat-accordion>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-raised-button color="warn" (click)="deleteUser(user.id)" id="admin-user-delete-btn">Delete
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>

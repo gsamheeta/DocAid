@@ -1,0 +1,15 @@
+.showFile {
+  margin: 0 0 0 1%;
+}
+
+#panelList {
+  margin: 2% 1%;
+}
+
+.deleteIcon {
+  cursor: pointer;
+  color: red;
+  margin: 0px 0 0 8px;
+  position: relative;
+  top: 6px;
+}

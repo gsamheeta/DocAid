@@ -1,0 +1,132 @@
+#profile-save-btn {
+  margin: 4% 0 4% 44%;
+  width: 10%;
+}
+
+#username {
+  color: white;
+  text-transform: uppercase;
+  /* padding: 0 0; */
+  font-size: 18px;
+  float: right;
+  position: relative;
+  right: 260px;
+  top: 27px;
+}
+
+.profileIcon {
+  float: right;
+  position: relative;
+  right: 339px;
+  top: 27px;
+}
+
+.green {
+  background-color: green;
+  color: white;
+  border: 1px solid white;
+}
+
+.orange {
+  background-color: orange;
+  color: white;
+  border: 1px solid white;
+}
+
+.red {
+  background-color: red;
+  color: white;
+  border: 1px solid white;
+}
+
+#zero-padding {
+  padding: 0;
+}
+
+#navcss {
+  max-height: 60px;
+  border-radius: 0px !important;
+}
+
+#navbarText ul {
+  margin: 1% 0 0 3%;
+  font-size: 16px;
+}
+
+.navbar-nav > li {
+  padding: 0 8%;
+}
+
+#logoutBtn {
+  float: right;
+}
+
+.extra-padding {
+  padding: 0 10% !important;
+}
+
+.example-card {
+  max-width: 400px;
+  font-family: 'Raleway', sans-serif;
+  border-radius: 16px;
+}
+
+.tiles {
+  margin: 2% 0 4% 2%;
+  width: 30%;
+}
+
+.example-header-image {
+  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+  background-size: cover;
+}
+
+.hr-text {
+  line-height: 1em;
+  position: relative;
+  outline: 0;
+  border: 0;
+  color: black;
+  text-align: center;
+  height: 1.5em;
+  opacity: 0.5;
+}
+
+.hr-text:before {
+  content: "";
+  background: linear-gradient(to right, transparent, #818078, transparent);
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 1px;
+}
+
+.hr-text:after {
+  content: attr(data-content);
+  position: relative;
+  display: inline-block;
+  color: black;
+  padding: 0 0.5em;
+  line-height: 1.5em;
+  color: #818078;
+  background-color: #fcfcfa;
+}
+
+.tile-body {
+  margin-left: 9px;
+  color: darkgrey;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.aprej-btn{
+  float: right;
+  margin: 0 10px 0 0 !important;
+}
+
+.info-btn{
+  margin: 0 0 0 12px !important
+}
